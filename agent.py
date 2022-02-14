@@ -166,8 +166,8 @@ class Agent:
         return path, actions
 
     def calc_heuristic(self, number, coord, direction):
-        if number <= 0 or number > 6:
-            raise ValueError("Number must be between 1 and 6")
+        if number <= 0 or number > 7:
+            raise ValueError("Number must be between 1 and 7")
         """
         Calculates heuristic between robot's current position
         and goal.

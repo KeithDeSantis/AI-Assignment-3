@@ -165,4 +165,4 @@ def main(filename, heuristic_number):
 
 if __name__ == "__main__":
     #main("board-6x6.txt", 5)
-    main2(5,3)
+    main2(7,3)
