@@ -68,11 +68,11 @@ def generate_data_from_path(board_used, actions, score, start, goal):
     for index in range(len(actions)):
         curr_dataentry = dataentry(0,0,0,0) # these values will be overwritten as they're calculated
 
-        # Collect all feature data for this data entry
-        curr_dataentry.vertical_distance_to_goal = abs(goal[0] - curr_row)
-        curr_dataentry.horizontal_distance_to_goal = abs(goal[1] - curr_column)
-        curr_dataentry.direction = direction
-        curr_dataentry.cost_to_goal = (100 - score) - cost_so_far
+        # Collect all feature data for this data entry, right now I only have these four
+        curr_dataentry.vertical_distance_to_goal = abs(goal[0] - curr_row) # vert distance
+        curr_dataentry.horizontal_distance_to_goal = abs(goal[1] - curr_column) # horiz distance
+        curr_dataentry.direction = direction # direction
+        curr_dataentry.cost_to_goal = (100 - score) - cost_so_far # cost to goal
 
         # Update variables for the next action being taken
         actionTaken = actions[index]
