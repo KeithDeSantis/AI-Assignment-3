@@ -186,7 +186,7 @@ class Agent:
             h = max(diff_c, diff_r)
         elif number == 4:
             h = diff_r + diff_c
-        else:
+        elif number == 5 or number == 6:
             if coord[0] == goal[0] and coord[1] == goal[1]:
                h = 0
             elif self.goal[0] == self.board.get_start()[0] or self.goal[1] == self.board.get_start()[1]:
@@ -197,6 +197,8 @@ class Agent:
             #h += min(self._get_edges())
             if number == 6:
                 h *= 3
+        elif number == 7:
+            h = h = abs(diff_r + diff_c) # todo our trained heuristic will go here
         return h
 
     def a_star(self, heuristic):

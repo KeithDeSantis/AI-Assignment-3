@@ -164,5 +164,5 @@ def main(filename, heuristic_number):
         print(f"\t{action.lower()}")
 
 if __name__ == "__main__":
-    #main("board62.txt", 5)
+    #main("board-6x6.txt", 5)
     main2(5,3)
