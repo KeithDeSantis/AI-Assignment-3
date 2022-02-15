@@ -152,7 +152,7 @@ def write_to_csv(dataset):
 # The threading that is done with thread_astar, ThreadWithReturnValue, and in main2 is
 # just so that we don't waste time on really complicated boards that take over 30 seconds to solve
 # when running our data collection
-def thread_astar(a, heuristic, a_star):
+def thread_astar(a, heuristic):
     a_star = a.a_star(heuristic)
     return a_star
 class ThreadWithReturnValue(Thread):
@@ -206,10 +206,9 @@ def main2(heuristic_number, time_to_run):
         # The threading below is just running A* on the board and collecting data.
         # I only thread so that we can put a time limit on it so we don't waste our time
         # on long boards that take > 30 seconds to solve
-        a_star = 0, 0, 0, 0
         run_time_start = time()
         passed_time_limit = False
-        thread = ThreadWithReturnValue(target=thread_astar, args=(a, heuristic_number, a_star))
+        thread = ThreadWithReturnValue(target=thread_astar, args=(a, heuristic_number))
         thread.start()
         while thread.is_alive():
             if time() - run_time_start > 30:
