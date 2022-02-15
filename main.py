@@ -13,7 +13,16 @@ from time import *
 
 
 def update_nums_through_move(row, column, direction, action, board_used):
-
+    """
+    This is a helper that updates the row, column, and direction of
+    the agent based on the action taken, as well as calculates the cost
+    :param row: initial row
+    :param column: initial column
+    :param direction: initial direction
+    :param action: action taken
+    :param board_used: board used
+    :return: List of [ row_after_move, column_after_move, direction_after_move, cost_of_move ]
+    """
     cost = None
     if action == "FORWARD":
         if direction == "north":
@@ -58,47 +67,73 @@ def update_nums_through_move(row, column, direction, action, board_used):
 
     return [row, column, direction, cost]
 
-def generate_data_from_path(board_used, actions, score, start, goal):
+def generate_data_from_path(board_used, actions, score):
+    """
+    This function takes in a path (list of actions) that was returned by A* for a certain board,
+    then steps through each action in the path, collecting all of our feature data for each and saving
+    the data into a dataentry (which is an object in the dataentry.py file)
+    :param board_used: The board object that A* was run on
+    :param actions: The path (list of actions) that A* returned
+    :param score: The score A* got
+    :return: A list of dataentries, one for each step in the path
+    """
+
+    # List of the data entries we're going to collect at each step of the path
     dataentries = []
 
+    # Get the coordinates of the start and goal
+    start = board_used.get_start()
+    goal = board_used.get_goal()
+
+    # Tracks the row our agent would be at at this point in the path
     curr_row = start[0]
+    # Tracks the column our agent would be at at this point in the path
     curr_column = start[1]
+    # Tracks the direction our agent would be facing at at this point in the path
     direction = 'north'
+    # Tracks the cost it would have taken so far to get to this point in the path
     cost_so_far = 0
 
     for index in range(len(actions)):
-        curr_dataentry = dataentry(0,0,0,0) # these values will be overwritten as they're calculated
 
-        # Collect all feature data for this data entry, right now I only have these four
-        curr_dataentry.vertical_distance_to_goal = abs(goal[0] - curr_row) # vert distance
-        curr_dataentry.horizontal_distance_to_goal = abs(goal[1] - curr_column) # horiz distance
-        curr_dataentry.direction = direction # direction
-        curr_dataentry.cost_to_goal = (100 - score) - cost_so_far # cost to goal
+        # This tracks our features for this step, currently they are:
+        # Row
+        # Column
+        # Goal Row
+        # Goal Column
+        # Vertical Distance to Goal (calculated from the previous features)
+        # Horizontal Distance to Goal (calculated from the previous features)
+        # Direction
+        # Cost to Goal (the dependent variable that we are gonna try to estimate)
+        curr_dataentry = dataentry(curr_row, curr_column, goal[0],
+                                   goal[1], direction, (100 - score) - cost_so_far)
+
 
         # Update variables for the next action being taken
         actionTaken = actions[index]
         updated_values = update_nums_through_move(curr_row, curr_column, direction, actionTaken, board_used)
-        curr_row = updated_values[0]
-        curr_column = updated_values[1]
-        direction = updated_values[2]
-        cost_so_far += updated_values[3]
+        curr_row = updated_values[0] # the row after the move
+        curr_column = updated_values[1] # the column after the move
+        direction = updated_values[2] # the direction after the next move
+        cost_so_far += updated_values[3] # tracks the cost thus far in the path
 
         # Add the data entry to the list of entries
         dataentries.append(curr_dataentry)
 
-    # This creates the final dataentry, for the goal state we've reached
-    curr_dataentry = dataentry(0, 0, 0, 0)  # these values will be overwritten as they're calculated
-    curr_dataentry.vertical_distance_to_goal = abs(goal[0] - curr_row)
-    curr_dataentry.horizontal_distance_to_goal = abs(goal[1] - curr_column)
-    curr_dataentry.direction = direction
-    curr_dataentry.cost_to_goal = 0
+    # This creates the final dataentry, for the goal state we've reached, with cost to goal = 0
+    curr_dataentry = dataentry(curr_row, curr_column, goal[0], goal[1], direction, 0)
 
+    # Add our final data entry
     dataentries.append(curr_dataentry)
 
     return dataentries
 
 def write_to_csv(dataset):
-    fields = ["Vertical Distance to Goal", "Horizontal Distance to Goal", "Direction", "Cost To Goal"]
+    """
+    This writes our dataentries to a CSVv
+    :param dataset: list of dataentries
+    """
+    fields = ["Row", "Column", "Goal Row", "Goal Column", "Vertical Distance to Goal", "Horizontal Distance to Goal", "Direction", "Cost To Goal"]
     rows = []
     for data in dataset:
         rows.append(data.to_list())
@@ -114,33 +149,98 @@ def write_to_csv(dataset):
         # writing the data rows
         csvwriter.writerows(rows)
 
+# The threading that is done with thread_astar, ThreadWithReturnValue, and in main2 is
+# just so that we don't waste time on really complicated boards that take over 30 seconds to solve
+# when running our data collection
+def thread_astar(a, heuristic, a_star):
+    a_star = a.a_star(heuristic)
+    return a_star
+class ThreadWithReturnValue(Thread):
+    def __init__(self, group=None, target=None, name=None,
+                 args=(), kwargs={}, Verbose=None):
+        Thread.__init__(self, group, target, name, args, kwargs)
+        self._return = None
+    def run(self):
+        if self._target is not None:
+            self._return = self._target(*self._args,
+                                                **self._kwargs)
+    def join(self, *args):
+        Thread.join(self, *args)
+        return self._return
+# This is used to collect our feature data from multiple runs
 def main2(heuristic_number, time_to_run):
+    """
+    Collects data on multiple A* runs to train a learner
+    :param heuristic_number: The heuristic being used
+    :param time_to_run: The time to run
+    """
+
+    # This is our master list of data entries that we collect
     all_data = []
+
+    # Used to put a time limit on how long to run
     start = time()
 
+    # Tracks the number of boards we've run A* on
     boardnumber = 0
 
+    # Run until we reach our time limit
     while time() - start < time_to_run:
+
+        # A print out to let us know it's running
         print(str(boardnumber))
+
+        # Generate a random board of dimension <first-arg x first-arg>
+        # and name it "board<boardnumber>.txt"
         boardgenerator.generate_board(5, boardnumber)
 
         board_filename = "board" + str(boardnumber) + ".txt"
 
+        # Create a board object from that .txt file
         b = board.Board(board_filename)
+
+        # Create an agent to run A* on that board
         a = agent.Agent(b.get_start(), b.get_goal(), b)
-        a_star = a.a_star(heuristic_number)
+        #a_star = a.a_star(heuristic_number)
 
-        data = generate_data_from_path(b, a_star[3][::-1][1:], a_star[0], b.get_start(), b.get_goal())
+        # The threading below is just running A* on the board and collecting data.
+        # I only thread so that we can put a time limit on it so we don't waste our time
+        # on long boards that take > 30 seconds to solve
+        a_star = 0, 0, 0, 0
+        run_time_start = time()
+        passed_time_limit = False
+        thread = ThreadWithReturnValue(target=thread_astar, args=(a, heuristic_number, a_star))
+        thread.start()
+        while thread.is_alive():
+            if time() - run_time_start > 30:
+                passed_time_limit = True
+                break
+        if passed_time_limit:
+            print("Skipping long computation")
+            os.remove(board_filename)
+            continue
+        a_star = thread.join()
 
+
+        # Collect data from the path found by A*
+        data = generate_data_from_path(b, a_star[3][::-1][1:], a_star[0])
+
+        # Add our entries to our master list
         for d in data:
             all_data.append(d)
 
+        # Increment the number of boards we've done
         boardnumber += 1
 
+        # Delete the old board.txt file
         os.remove(board_filename)
+
+    # Once we've run for long enough we are done and can write out master list of
+    # data entries to a .csv
     print("done")
     write_to_csv(all_data)
 
+# Old main used to run A* for assignment 1
 def main(filename, heuristic_number):
     """
     Main function.
@@ -163,6 +263,11 @@ def main(filename, heuristic_number):
     print(f"Actions:")
     for action in a_star[3][::-1][1:]:
         print(f"\t{action.lower()}")
+
+    #data = generate_data_from_path(b, a_star[3][::-1][1:], a_star[0], b.get_start(), b.get_goal())
+
+    #for i in data:
+    #    print(str(i))
 
 if __name__ == "__main__":
     #main("board-6x6.txt", 5)
