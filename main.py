@@ -97,16 +97,16 @@ def generate_data_from_path(board_used, actions, score):
     for index in range(len(actions)):
 
         # This tracks our features for this step, currently they are:
-        # Row
-        # Column
-        # Goal Row
-        # Goal Column
-        # Vertical Distance to Goal (calculated from the previous features)
-        # Horizontal Distance to Goal (calculated from the previous features)
+        row = curr_row # Row
+        column = curr_column # Column
+        goal_row = goal[0]# Goal Row
+        goal_column = goal[1] # Goal Column
+        # Vertical Distance to Goal (calculated in data entry constructor from the previous features)
+        # Horizontal Distance to Goal (calculated in data entry constructor from the previous features)
         # Direction
-        # Cost to Goal (the dependent variable that we are gonna try to estimate)
-        curr_dataentry = dataentry(curr_row, curr_column, goal[0],
-                                   goal[1], direction, (100 - score) - cost_so_far)
+        cost_to_goal = (100 - score) - cost_so_far # Cost to Goal (the dependent variable that we are gonna try to estimate)
+
+        curr_dataentry = dataentry(row, column, goal_row, goal_column, direction, cost_to_goal)
 
 
         # Update variables for the next action being taken
