@@ -13,14 +13,7 @@ from time import *
 
 
 def update_nums_through_move(row, column, direction, action, board_used):
-    """
-    :param row: The row the move is happening on
-    :param column: The column the move is happj
-    :param direction:
-    :param action:
-    :param board_used:
-    :return:
-    """
+
     cost = None
     if action == "FORWARD":
         if direction == "north":
