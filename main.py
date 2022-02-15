@@ -9,6 +9,7 @@ import board
 import math
 import boardgenerator
 from dataentry import dataentry
+import featurefunctions
 from time import *
 
 
@@ -105,8 +106,9 @@ def generate_data_from_path(board_used, actions, score):
         # Horizontal Distance to Goal (calculated in data entry constructor from the previous features)
         # Direction
         cost_to_goal = (100 - score) - cost_so_far # Cost to Goal (the dependent variable that we are gonna try to estimate)
+        sector_cost = featurefunctions.get_sector_cost(curr_row, curr_column, goal_row, goal_column, board_used)
 
-        curr_dataentry = dataentry(row, column, goal_row, goal_column, direction, cost_to_goal)
+        curr_dataentry = dataentry(row, column, goal_row, goal_column, direction, sector_cost, cost_to_goal)
 
 
         # Update variables for the next action being taken
@@ -121,7 +123,7 @@ def generate_data_from_path(board_used, actions, score):
         dataentries.append(curr_dataentry)
 
     # This creates the final dataentry, for the goal state we've reached, with cost to goal = 0
-    curr_dataentry = dataentry(curr_row, curr_column, goal[0], goal[1], direction, 0)
+    curr_dataentry = dataentry(curr_row, curr_column, goal[0], goal[1], direction, 0, 0)
 
     # Add our final data entry
     dataentries.append(curr_dataentry)
@@ -133,7 +135,7 @@ def write_to_csv(dataset):
     This writes our dataentries to a CSVv
     :param dataset: list of dataentries
     """
-    fields = ["Row", "Column", "Goal Row", "Goal Column", "Vertical Distance to Goal", "Horizontal Distance to Goal", "Direction", "Cost To Goal"]
+    fields = ["Row", "Column", "Goal Row", "Goal Column", "Vertical Distance to Goal", "Horizontal Distance to Goal", "Direction", "Sector Cost", "Cost To Goal"]
     rows = []
     for data in dataset:
         rows.append(data.to_list())

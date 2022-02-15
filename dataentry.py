@@ -12,7 +12,7 @@ class dataentry:
     Agent Direction
     Cost to Goal (this will be what our learner is trying to estimate)
     """
-    def __init__(self, row, column, goal_row, goal_column, direction, cost_to_goal):
+    def __init__(self, row, column, goal_row, goal_column, direction, sector_cost, cost_to_goal):
         self.row = row
         self.column = column
         self.goal_row = goal_row
@@ -20,6 +20,7 @@ class dataentry:
         self.vertical_distance_to_goal = abs(self.goal_row - self.row)
         self.horizontal_distance_to_goal = abs(self.goal_column - self.column)
         self.direction = direction
+        self.sector_cost = sector_cost
         self.cost_to_goal = cost_to_goal
 
     def __str__(self):
@@ -30,6 +31,7 @@ class dataentry:
         string = string + "Vertical Distance to Goal: " + str(self.vertical_distance_to_goal) + "\n"
         string = string + "Horizontal Distance to Goal: " + str(self.horizontal_distance_to_goal) + "\n"
         string = string + "Direction: " + self.direction + "\n"
+        string = string + "Sector Cost: " + str(self.sector_cost) + "\n"
         string = string + "Cost to Goal: " + str(self.cost_to_goal)
         return string
 
@@ -47,4 +49,4 @@ class dataentry:
             numerical_direction = 3
         elif self.direction == "west":
             numerical_direction = 4
-        return [self.row, self.column, self.goal_row, self.goal_column, self.vertical_distance_to_goal, self.horizontal_distance_to_goal, numerical_direction, self.cost_to_goal]
+        return [self.row, self.column, self.goal_row, self.goal_column, self.vertical_distance_to_goal, self.horizontal_distance_to_goal, numerical_direction, self.sector_cost, self.cost_to_goal]
