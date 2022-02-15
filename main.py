@@ -265,7 +265,7 @@ def main(filename, heuristic_number):
     for action in a_star[3][::-1][1:]:
         print(f"\t{action.lower()}")
 
-    #data = generate_data_from_path(b, a_star[3][::-1][1:], a_star[0], b.get_start(), b.get_goal())
+    #data = generate_data_from_path(b, a_star[3][::-1][1:], a_star[0])
 
     #for i in data:
     #    print(str(i))

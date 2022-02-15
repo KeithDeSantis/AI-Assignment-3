@@ -59,67 +59,67 @@ def get_sector_cost(row, col, goal_row, goal_col, board):
     if(check_goal_not_edge_case(goal_row, goal_col, board)):
         edge_case_value = get_edge_case_sector_cost(goal_row, goal_col, board, sector)
         #below is true if robot is in a sector affected by the edge case
-        if(edge_case_value is not Null):
+        if(edge_case_value is not None):
             return edge_case_value
 
     # check the cost near the goal based on location of robot
-    if(sector is "top_left"):
+    if(sector == "top_left"):
         """
         [X][X][ ]
         [X][G][ ]
         [ ][ ][ ]
         """
         return board.get_cost(goal_row-1, goal_col-1) + board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row-1, goal_col)
-    elif(sector is "top_center"):
+    elif(sector == "top_center"):
         """
         [X][X][X]
         [ ][G][ ]
         [ ][ ][ ]
         """
         return board.get_cost(goal_row-1, goal_col-1) + board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row-1, goal_col)
-    elif(sector is "top_right"):
+    elif(sector == "top_right"):
         """
         [ ][X][X]
         [ ][G][X]
         [ ][ ][ ]
         """
         return board.get_cost(goal_row-1, goal_col) + board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row, goal_col+1)
-    elif(sector is "middle_left"):
+    elif(sector == "middle_left"):
         """
         [X][ ][ ]
         [X][G][ ]
         [X][ ][ ]
         """
         return board.get_cost(goal_row-1, goal_col-1) + board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row+1, goal_col-1)
-    elif(sector is "middle_right"):
+    elif(sector == "middle_right"):
         """
         [ ][ ][X]
         [ ][G][X]
         [ ][ ][X]
         """
         return board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row+1, goal_col+1)
-    elif(sector is "bottom_left"):
+    elif(sector == "bottom_left"):
         """
         [ ][ ][ ]
         [X][G][ ]
         [X][X][ ]
         """
         return board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row+1, goal_col-1) + board.get_cost(goal_row+1, goal_col)
-    elif(sector is "bottom_center"):
+    elif(sector == "bottom_center"):
         """
         [ ][ ][ ]
         [ ][G][ ]
         [X][X][X]
         """
         return board.get_cost(goal_row+1, goal_col-1) + board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
-    elif(sector is "bottom_right"):
+    elif(sector == "bottom_right"):
         """
         [ ][ ][ ]
         [ ][G][X]
         [ ][X][X]
         """
         return board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
-    elif(sector is "in_center"):
+    elif(sector == "in_center"):
         """
         [ ][ ][ ]
         [ ][G][ ]
@@ -131,7 +131,8 @@ def get_sector_cost(row, col, goal_row, goal_col, board):
 def check_goal_not_edge_case(goal_row, goal_col, board):
     if(goal_row == 0 or goal_col == 0 or goal_row == board.rows or goal_col == board.cols):
         return True
-    else return False
+    else:
+        return False
 
 def get_edge_case_sector_cost(goal_row, goal_col, board, sector):
     """
@@ -141,47 +142,48 @@ def get_edge_case_sector_cost(goal_row, goal_col, board, sector):
     
     #check if corner
     if(goal_row == 0 and goal_col == 0):
-        if(sector is "bottom_center"):
+        if(sector == "bottom_center"):
             return board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
-        elif(sector is "middle_right"):
+        elif(sector == "middle_right"):
             return board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row+1, goal_col+1)
     elif(goal_row == 0 and goal_col == board.cols):
-        if(sector is "bottom_center"):
+        if(sector == "bottom_center"):
             return board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col-1)
-        elif(sector is "middle_left"):
+        elif(sector == "middle_left"):
             return board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row+1, goal_col-1)
     elif(goal_row == board.rows and goal_col == 0):
-        if(sector is "top_center"):
+        if(sector == "top_center"):
             return board.get_cost(goal_row-1, goal_col) + board.get_cost(goal_row-1, goal_col+1)
-        elif(sector is "middle_right"):
+        elif(sector == "middle_right"):
             return board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row-1, goal_col+1)
     elif(goal_row == board.rows and goal_col == board.cols):
-        if(sector is "top_center"):
+        if(sector == "top_center"):
             return board.get_cost(goal_row-1, goal_col) + board.get_cost(goal_row-1, goal_col-1)
-        elif(sector is "middle_left"):
+        elif(sector == "middle_left"):
             return board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row-1, goal_col-1)
 
     #check if along board edges
     elif(goal_row == 0 and not (goal_col == 0 or goal_col == board.cols)):
-        if(sector is "middle_left"):
+        if(sector == "middle_left"):
             return board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row+1, goal_col-1)
-        elif(sector is "middle_right"):
+        elif(sector == "middle_right"):
             return board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row+1, goal_col+1)
     elif(goal_row == board.rows and not (goal_col == 0 or goal_col == board.cols)):
-        if(sector is "middle_left"):
+        if(sector == "middle_left"):
             return board.get_cost(goal_row-1, goal_col-1) + board.get_cost(goal_row, goal_col-1)
-        elif(sector is "middle_right"):
+        elif(sector == "middle_right"):
             return board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row, goal_col+1)
     elif(goal_col == 0 and not (goal_row == 0 or goal_row == board.rows)):
-        if(sector is "top_center"):
+        if(sector == "top_center"):
             return board.get_cost(goal_row-1, goal_col) + board.get_cost(goal_row-1, goal_col+1)
-        elif(sector is "bottom_center"):    
+        elif(sector == "bottom_center"):    
             return board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
     elif(goal_col == board.cols and not (goal_row == 0 or goal_row == board.rows)):
-        if(sector is "top_center"):
+        if(sector == "top_center"):
             return board.get_cost(goal_row-1, goal_col-1) + board.get_cost(goal_row-1, goal_col)
-        elif(sector is "bottom_center"):    
+        elif(sector == "bottom_center"):    
             return board.get_cost(goal_row+1, goal_col-1) + board.get_cost(goal_row+1, goal_col)
     
     # robot not in sector that is affected by the goal position
-    else return Null
+    else:
+        return None
