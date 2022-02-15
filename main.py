@@ -192,7 +192,7 @@ def main2(heuristic_number, time_to_run):
 
         # Generate a random board of dimension <first-arg x first-arg>
         # and name it "board<boardnumber>.txt"
-        boardgenerator.generate_board(5, boardnumber)
+        boardgenerator.generate_board(6, boardnumber)
 
         board_filename = "board" + str(boardnumber) + ".txt"
 
