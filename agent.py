@@ -187,12 +187,16 @@ class Agent:
         elif number == 4:
             h = diff_r + diff_c
         elif number == 5 or number == 6:
-            if coord[0] == goal[0] and coord[1] == goal[1]:
-               h = 0
-            elif self.goal[0] == self.board.get_start()[0] or self.goal[1] == self.board.get_start()[1]:
-               h = abs(diff_r + diff_c)
-            else:
-               h = abs(diff_r + diff_c) + 1
+
+            h = math.sqrt((diff_c**2 + diff_r**2)) + ((diff_c + diff_r)/2) # Alyssa's H5
+
+            #if coord[0] == goal[0] and coord[1] == goal[1]: # Keith's H5
+            #   h = 0
+            #elif self.goal[0] == self.board.get_start()[0] or self.goal[1] == self.board.get_start()[1]:
+            #   h = abs(diff_r + diff_c)
+            #else:
+            #   h = abs(diff_r + diff_c) + 1
+
             #h = abs((diff_r + diff_c) -1) # todo i changed H5 to mine, not much better and shouldnt cause problems but we'll pick one
             #h += min(self._get_edges())
             if number == 6:
