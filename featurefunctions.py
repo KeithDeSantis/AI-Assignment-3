@@ -51,3 +51,78 @@ def identify_sector_of_agent(row, column, goal_row, goal_column):
 
         elif column > goal_column + 1:
             return bottom_right
+
+def get_sector_cost(row, col, goal_row, goal_col, board):
+    sector = identify_sector_of_agent(row, column, goal_row, goal_column)
+    # check the cost near the goal based on location of robot
+    if(sector is "top_left"):
+        """
+        [X][X][ ]
+        [X][G][ ]
+        [ ][ ][ ]
+        """
+        return board.get_cost(goal_row-1, goal_col-1) + 
+            board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row-1, goal_col)
+    elif(sector is "top_center"):
+        """
+        [X][X][X]
+        [ ][G][ ]
+        [ ][ ][ ]
+        """
+        return board.get_cost(goal_row-1, goal_col-1) + 
+            board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row-1, goal_col)
+    elif(sector is "top_right"):
+        """
+        [ ][X][X]
+        [ ][G][X]
+        [ ][ ][ ]
+        """
+        return board.get_cost(goal_row-1, goal_col) + 
+            board.get_cost(goal_row-1, goal_col+1) + board.get_cost(goal_row, goal_col+1)
+    elif(sector is "middle_left"):
+        """
+        [X][ ][ ]
+        [X][G][ ]
+        [X][ ][ ]
+        """
+        return board.get_cost(goal_row-1, goal_col-1) + 
+            board.get_cost(goal_row, goal_col-1) + board.get_cost(goal_row+1, goal_col-1)
+    elif(sector is "middle_right"):
+        """
+        [ ][ ][X]
+        [ ][G][X]
+        [ ][ ][X]
+        """
+        return board.get_cost(goal_row-1, goal_col+1) + 
+            board.get_cost(goal_row, goal_col+1) + board.get_cost(goal_row+1, goal_col+1)
+    elif(sector is "bottom_left"):
+        """
+        [ ][ ][ ]
+        [X][G][ ]
+        [X][X][ ]
+        """
+        return board.get_cost(goal_row, goal_col-1) + 
+            board.get_cost(goal_row+1, goal_col-1) + board.get_cost(goal_row+1, goal_col)
+    elif(sector is "bottom_center"):
+        """
+        [ ][ ][ ]
+        [ ][G][ ]
+        [X][X][X]
+        """
+        return board.get_cost(goal_row+1, goal_col-1) + 
+            board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
+    elif(sector is "bottom_right"):
+        """
+        [ ][ ][ ]
+        [ ][G][X]
+        [ ][X][X]
+        """
+        return board.get_cost(goal_row, goal_col+1) + 
+            board.get_cost(goal_row+1, goal_col) + board.get_cost(goal_row+1, goal_col+1)
+    elif(sector is "in_center"):
+        """
+        [ ][ ][ ]
+        [ ][G][ ]
+        [ ][ ][ ]
+        """
+        return 0
