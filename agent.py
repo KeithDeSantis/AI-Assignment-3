@@ -3,7 +3,7 @@ import math
 
 
 def direction_change_by_action(direction, action):
-    if action == "FORWARD" or action == "BASH":
+    if action == "FORWARD" or action == "BASH" or action == "BASHING":
         return direction
 
     if direction == "north":
