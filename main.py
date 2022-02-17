@@ -270,6 +270,81 @@ def main(filename, heuristic_number):
     #for i in data:
     #    print(str(i))
 
+def main3():
+    #for h 5
+    h5_nodes_expanded = []
+    h5_solution_cost = []
+    h5_num_actions = []
+    h5_bf = []
+
+    #for h 6
+    h6_nodes_expanded = []
+    h6_solution_cost = []
+    h6_num_actions = []
+    h6_bf = []
+
+    #for h 7
+    h7_nodes_expanded = []
+    h7_solution_cost = []
+    h7_num_actions = []
+    h7_bf = []
+
+
+    for i in range(10):
+        boardgenerator.generate_board(6, 0)
+        b = board.Board("board0.txt")
+
+        a = agent.Agent(b.get_start(), b.get_goal(), b)
+        a_star5 = a.a_star(5)
+        a_star6 = a.a_star(6)
+        a_star7 = a.a_star(7)
+
+        h5_nodes_expanded.append(a_star5[2])
+        h5_solution_cost.append(100 - a_star5[0])
+        h5_num_actions.append(a_star5[1])
+        h5_bf.append(math.pow(a_star5[2], 1/a_star5[1]))
+
+        h6_nodes_expanded.append(a_star6[2])
+        h6_solution_cost.append(100 - a_star6[0])
+        h6_num_actions.append(a_star6[1])
+        h6_bf.append(math.pow(a_star6[2], 1/a_star6[1]))
+
+        h7_nodes_expanded.append(a_star7[2])
+        h7_solution_cost.append(100 - a_star7[0])
+        h7_num_actions.append(a_star7[1])
+        h7_bf.append(math.pow(a_star7[2], 1/a_star7[1]))
+    
+    print("nodes",h5_nodes_expanded)
+    print("sol_cost",h5_solution_cost)
+    print("num actions",h5_num_actions)
+    print("bf",h5_bf)
+
+    print("Avg nodes exp for H5: ", sum(h5_nodes_expanded)/len(h5_nodes_expanded))
+    print("Avg sol cost for H5: ", sum(h5_solution_cost)/len(h5_solution_cost))
+    print("Avg num actions for H5: ", sum(h5_num_actions)/len(h5_num_actions))
+    print("Avg branching f for H5: ", sum(h5_bf)/len(h5_bf))
+
+    print("nodes",h6_nodes_expanded)
+    print("sol_cost",h6_solution_cost)
+    print("num actions",h6_num_actions)
+    print("bf",h6_bf)
+
+    print("Avg nodes exp for H6: ", sum(h6_nodes_expanded)/len(h6_nodes_expanded))
+    print("Avg sol cost for H6: ", sum(h6_solution_cost)/len(h6_solution_cost))
+    print("Avg num actions for H6: ", sum(h6_num_actions)/len(h6_num_actions))
+    print("Avg branching f for H6: ", sum(h6_bf)/len(h6_bf))
+
+    print("nodes",h7_nodes_expanded)
+    print("sol_cost",h7_solution_cost)
+    print("num actions",h7_num_actions)
+    print("bf",h7_bf)
+
+    print("Avg nodes exp for H7: ", sum(h7_nodes_expanded)/len(h7_nodes_expanded))
+    print("Avg sol cost for H7: ", sum(h7_solution_cost)/len(h7_solution_cost))
+    print("Avg num actions for H7: ", sum(h7_num_actions)/len(h7_num_actions))
+    print("Avg branching f for H7: ", sum(h7_bf)/len(h7_bf))
+
 if __name__ == "__main__":
-    #main("board-6x6.txt", 5)
-    main2(5,7200)
+    # main("board-6x6.txt", 7)
+    # main2(5,7200)
+    main3()

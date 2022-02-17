@@ -1,5 +1,6 @@
 import node
 import math
+import featurefunctions
 
 
 def direction_change_by_action(direction, action):
@@ -165,6 +166,21 @@ class Agent:
             curr = curr.parent
         return path, actions
 
+    def direction_number(self, direction):
+        """
+        Converts the dataentry to a list for writing to csv
+        Direction is represented by a number since we're doing linear regression
+        :return:
+        """
+        if direction == "north":
+            return 1
+        elif direction == "east":
+            return 2
+        elif direction == "south":
+            return 3
+        elif direction == "west":
+            return 4
+
     def calc_heuristic(self, number, coord, direction):
         if number <= 0 or number > 7:
             raise ValueError("Number must be between 1 and 7")
@@ -178,6 +194,7 @@ class Agent:
         goal = self.board.get_goal()
         diff_r = abs(coord[0] - goal[0])
         diff_c = abs(coord[1] - goal[1])
+        dir_num = self.direction_number(direction)
         if number == 1:
             return 0
         elif number == 2:
@@ -202,7 +219,10 @@ class Agent:
             if number == 6:
                 h *= 3
         elif number == 7:
-            h = h = abs(diff_r + diff_c) # todo our trained heuristic will go here
+            if(goal[0] == coord[0] and goal[1] == coord[1]):
+                return 0
+            sector = featurefunctions.get_sector_cost(coord[0], coord[1], goal[0], goal[1], self.board)
+            h = -0.1364 * coord[0] + 0.0183 * coord[1] + 0.0616 * goal[0] + 2.7938 * diff_r + 2.918 * diff_c + -0.2633 * dir_num + 0.0375 * sector + -0.0396  # todo our trained heuristic will go here
         return h
 
     def a_star(self, heuristic):
