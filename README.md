@@ -9,7 +9,7 @@ Run ```astar.py <board-file-path> <heuristic-number>``` to run the program on th
 Our machine-learned heuristic is heuristic number 7.
 
 
-This submission contains X files:
+This submission contains the following files:
 
 The A* Base Code from Assignment 1, (with small adjustments for data collection):
 * ```agent.py```
